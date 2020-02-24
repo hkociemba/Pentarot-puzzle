@@ -118,7 +118,7 @@ const
 
 implementation
 
-uses math, MMSystem;
+uses math, tables;
 {$R *.dfm}
 
 type
@@ -138,113 +138,8 @@ var
   isRotating: boolean; // true during rotation
   rotAngle: Double; // rotation angle during rotation
   circleIdx: Integer; // index of the rotating circle
-  centerState: array [0 .. 4] of Integer; // used only in interlocking mode
-  validCenterHash: array [0 .. 99999] of Int8;
 
-function centerStateHash(var a: array of Integer): Integer;
 
-var
-  i: Integer;
-begin
-  result := 0;
-  for i := 4 downto 0 do
-  begin
-    result := 10 * result + a[i];
-  end;
-
-end;
-
-procedure InvCenterStateHash(h: Integer; var a: array of Integer);
-
-var
-  i: Integer;
-begin
-
-  for i := 0 to 4 do
-  begin
-    a[i] := h mod 10;
-    h := h div 10
-  end;
-
-end;
-
-procedure getValidCenterStates;
-
-var
-  i, j, k, cnt, cnt2, oldcnt, depth: Integer;
-begin
-  for i := 0 to 99999 do
-    validCenterHash[i] := -1;
-  validCenterHash[0] := 0;
-  cnt := 1;
-  oldcnt := 0;
-  depth := 0;
-  while oldcnt < cnt do
-  begin
-    Inc(depth);
-    oldcnt := cnt;
-    for i := 0 to 99999 do
-    begin
-      if validCenterHash[i] = depth - 1 then
-        InvCenterStateHash(i, centerState);
-      for j := 0 to 4 do
-      begin
-        if (centerState[(j + 1) mod 5] <> 0) and
-          (centerState[(j + 1) mod 5] <> 3) then
-          continue; // move is blocked
-        if (centerState[(j + 4) mod 5] <> 0) and
-          (centerState[(j + 4) mod 5] <> 7) then
-          continue; // move is blocked
-
-        centerState[j] := (centerState[j] + 1) mod 10; // move clockwise
-        // check if in the new state at least two disks are movable.
-        // Else we move into a dead end which is useless
-        cnt2 := 0;
-        for k := 0 to 4 do
-        begin
-          if (centerState[(k + 1) mod 5] <> 0) and
-            (centerState[(k + 1) mod 5] <> 3) then
-            continue;
-          if (centerState[(k + 4) mod 5] <> 0) and
-            (centerState[(k + 4) mod 5] <> 7) then
-            continue;
-          Inc(cnt2);
-        end;
-        if (validCenterHash[centerStateHash(centerState)] = -1) and (cnt2 > 1)
-        then
-        begin
-          validCenterHash[centerStateHash(centerState)] := depth;
-          Inc(cnt);
-        end;
-
-        // undo clockwise turn and move anticlockwise
-        centerState[j] := (centerState[j] + 8) mod 10;
-        // check if in the new state at least two disks are movable.
-        // Else we move into a dead end which is useless
-        cnt2 := 0;
-        for k := 0 to 4 do
-        begin
-          if (centerState[(k + 1) mod 5] <> 0) and
-            (centerState[(k + 1) mod 5] <> 3) then
-            continue;
-          if (centerState[(k + 4) mod 5] <> 0) and
-            (centerState[(k + 4) mod 5] <> 7) then
-            continue;
-          Inc(cnt2);
-        end;
-        if (validCenterHash[centerStateHash(centerState)] = -1) and (cnt2 > 1)
-        then
-        begin
-          validCenterHash[centerStateHash(centerState)] := depth;
-          Inc(cnt);
-        end;
-        // undo anticlockwise turn
-        centerState[j] := (centerState[j] + 1) mod 10;
-      end;
-    end;
-  end;
-  // maximum depth is 13, 1301 different states
-end;
 
 function solidAllowed(n: Integer): boolean;
 // true if move is allowed on circle n (0..4)
@@ -425,9 +320,6 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
-
-var
-  i: Integer;
 begin
   initPuzzle(3);
   colors[0] := clBlack;
@@ -662,7 +554,7 @@ procedure TForm1.PBPaint(Sender: TObject);
 
 var
   i, k: Integer;
-  r, r1: Double;
+  r: Double;
   fsz: TSize;
 
 begin
@@ -679,7 +571,7 @@ begin
   cc[5].X := 0; // center of puzzle
   cc[5].Y := 0;
   r := sz * s_lg; // radius of the 5 large circles
-  r1 := r / (2 * cos(pi / 5) + 1); // radius of the 5 small circles
+  // r1 := r / (2 * cos(pi / 5) + 1); // radius of the 5 small circles
 
   ct[0] := sum(cc[0], prod(dg[0], r));
   ct[1] := sum(cc[1], prod(dg[3], r));
