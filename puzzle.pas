@@ -30,6 +30,10 @@ type
     CBOrient: TCheckBox;
     CBId: TCheckBox;
     CBMDir: TCheckBox;
+    B2PairSwap: TButton;
+    TimerWait: TTimer;
+    BPairSwap: TButton;
+    Button1: TButton;
     procedure PBPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure BScrambleClick(Sender: TObject);
@@ -49,10 +53,15 @@ type
     procedure ButtonRotateClick(Sender: TObject);
     procedure ButtonReflectClick(Sender: TObject);
     procedure CBIdClick(Sender: TObject);
+    procedure B2PairSwapClick(Sender: TObject);
+    procedure BPairSwapClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
 
   public
     procedure resetPuzzle;
+    procedure rotateDisk(idx, dir: Integer);
+
   end;
 
   TDPoint = record
@@ -64,6 +73,8 @@ type
 
 var
   Form1: TForm1;
+
+procedure move(n: Integer);
 
 const
   pg: array [0 .. 4] of TDPoint = ((X: 0; Y: 1), (X: - 0.951056516295154;
@@ -138,8 +149,6 @@ var
   isRotating: boolean; // true during rotation
   rotAngle: Double; // rotation angle during rotation
   circleIdx: Integer; // index of the rotating circle
-
-
 
 function solidAllowed(n: Integer): boolean;
 // true if move is allowed on circle n (0..4)
@@ -331,7 +340,9 @@ begin
   pencol := clWHite;
   PB.controlstyle := PB.controlstyle + [csopaque];
 
-  // getValidCenterStates;
+  getRawCenterHashDepth;
+  makeIdxToHash;
+  makecenterSCoord;
 end;
 
 function pointRot(p: TDPoint; angle: Double): TDPoint;
@@ -509,7 +520,7 @@ procedure TForm1.PBMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 
 var
-  i, dist: Integer;
+  i, dist, a: Integer;
 begin
 
   dist := maxint;
@@ -519,34 +530,42 @@ begin
       dist := round(Sqr(X - cc[i].X - cx) + Sqr(Y - cc[i].Y - cy));
       circleIdx := i;
     end;
-
-  if CBDisk.Checked and (centerState[(circleIdx + 1) mod 5] <> 0) and
-    (centerState[(circleIdx + 1) mod 5] <> 3) then
-  // impossible rotation
-  begin
-    TimerFlare.Tag := 4;
-    TimerFlare.Enabled := true;
-    exit;
-  end;
-
-  if CBDisk.Checked and (centerState[(circleIdx + 4) mod 5] <> 0) and
-    (centerState[(circleIdx + 4) mod 5] <> 7) then
-  // impossible rotation
-  begin
-    TimerFlare.Tag := 4;
-    TimerFlare.Enabled := true;
-    exit;
-  end;
-
-  isRotating := true;
-  rotAngle := 0;
-  Timer1.Enabled := true;
-  if Button = mbLeft then
-    Timer1.Tag := 1
-  else
-    Timer1.Tag := -1;
   if CBMDir.Checked then
-    Timer1.Tag := Timer1.Tag * (-1);
+    a := -1
+  else
+    a := 1;
+  if Button = mbLeft then
+    rotateDisk(circleIdx, 1 * a)
+  else
+    rotateDisk(circleIdx, -1 * a);
+
+  // if CBDisk.Checked and (centerState[(circleIdx + 1) mod 5] <> 0) and
+  // (centerState[(circleIdx + 1) mod 5] <> 3) then
+  // // impossible rotation
+  // begin
+  // TimerFlare.Tag := 4;
+  // TimerFlare.Enabled := true;
+  // exit;
+  // end;
+  //
+  // if CBDisk.Checked and (centerState[(circleIdx + 4) mod 5] <> 0) and
+  // (centerState[(circleIdx + 4) mod 5] <> 7) then
+  // // impossible rotation
+  // begin
+  // TimerFlare.Tag := 4;
+  // TimerFlare.Enabled := true;
+  // exit;
+  // end;
+  //
+  // isRotating := true;
+  // rotAngle := 0;
+  // Timer1.Enabled := true;
+  // if Button = mbLeft then
+  // Timer1.Tag := 1
+  // else
+  // Timer1.Tag := -1;
+  // if CBMDir.Checked then
+  // Timer1.Tag := Timer1.Tag * (-1);
 
 end;
 
@@ -751,6 +770,33 @@ begin
   PB.Invalidate;
 end;
 
+procedure TForm1.rotateDisk(idx, dir: Integer);
+begin
+  circleIdx := idx;
+  if CBDisk.Checked and (centerState[(circleIdx + 1) mod 5] <> 0) and
+    (centerState[(circleIdx + 1) mod 5] <> 3) then
+  // impossible rotation
+  begin
+    TimerFlare.Tag := 4;
+    TimerFlare.Enabled := true;
+    exit;
+  end;
+
+  if CBDisk.Checked and (centerState[(circleIdx + 4) mod 5] <> 0) and
+    (centerState[(circleIdx + 4) mod 5] <> 7) then
+  // impossible rotation
+  begin
+    TimerFlare.Tag := 4;
+    TimerFlare.Enabled := true;
+    exit;
+  end;
+
+  isRotating := true;
+  rotAngle := 0;
+  Timer1.Enabled := true;
+  Timer1.Tag := dir; // 1/-1  clockwise/anticlockwise turn
+end;
+
 procedure TForm1.CBDiskClick(Sender: TObject);
 begin
   resetPuzzle;
@@ -827,6 +873,120 @@ begin
   PB.Repaint;
 end;
 
+procedure wait;
+var
+  start, elapsed: Cardinal;
+begin
+  start := GetTickCount;
+  elapsed := 0;
+  repeat
+    // (WAIT_OBJECT_0+nCount) is returned when a message is in the queue.
+    // WAIT_TIMEOUT is returned when the timeout elapses.
+    if MsgWaitForMultipleObjects(0, Pointer(nil)^, false, 400 - elapsed,
+      QS_ALLINPUT) <> WAIT_OBJECT_0 then
+      break;
+    Application.ProcessMessages;
+    elapsed := GetTickCount - start;
+  until elapsed >= 400;
+end;
+
+procedure TForm1.B2PairSwapClick(Sender: TObject);
+begin
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(1, -1);
+  wait;
+  rotateDisk(4, -1);
+  wait;
+  rotateDisk(1, 1);
+end;
+
+procedure TForm1.BPairSwapClick(Sender: TObject);
+begin
+  // R3 L4 R2 L2 R3 L4  R2 L4 R3 L2 R2 L4
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+end;
+
 procedure TForm1.BResetClick(Sender: TObject);
 begin
   resetPuzzle;
@@ -846,6 +1006,53 @@ begin
         move(n);
   end;
   PB.Invalidate;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  // R1 L1 R1 L9    R9 L1 R9 L9   R1 L9 R1 L2   R9 L8 R9 L1
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(4, -1);
+  wait;
+
+  rotateDisk(1, -1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(1, -1);
+  wait;
+  rotateDisk(4, -11);
+  wait;
+
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(4, -1);
+  wait;
+  rotateDisk(1, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+
+  rotateDisk(1, -1);
+  wait;
+  rotateDisk(4, -1);
+  wait;
+  rotateDisk(4, -1);
+  wait;
+  rotateDisk(1, -1);
+  wait;
+  rotateDisk(4, 1);
+  wait;
+
+
+
 end;
 
 procedure TForm1.ButtonReflectClick(Sender: TObject);

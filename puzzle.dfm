@@ -45,7 +45,7 @@ object Form1: TForm1
     end
     object ButtonReflect: TButton
       Left = 664
-      Top = 676
+      Top = 39
       Width = 105
       Height = 25
       Anchors = [akRight, akBottom]
@@ -53,10 +53,39 @@ object Form1: TForm1
       TabOrder = 0
       OnClick = ButtonReflectClick
     end
+    object B2PairSwap: TButton
+      Left = 23
+      Top = 125
+      Width = 106
+      Height = 25
+      Caption = 'Double Pair Swap'
+      TabOrder = 1
+      OnClick = B2PairSwapClick
+    end
+    object BPairSwap: TButton
+      Left = 23
+      Top = 94
+      Width = 106
+      Height = 25
+      BiDiMode = bdLeftToRight
+      Caption = 'Single Pair Swap'
+      ParentBiDiMode = False
+      TabOrder = 2
+      OnClick = BPairSwapClick
+    end
+    object Button1: TButton
+      Left = 23
+      Top = 46
+      Width = 106
+      Height = 25
+      Caption = 'Single Pair Twist'
+      TabOrder = 3
+      OnClick = Button1Click
+    end
   end
   object BReset: TButton
-    Left = 537
-    Top = 679
+    Left = 624
+    Top = 671
     Width = 105
     Height = 25
     Anchors = [akRight, akBottom]
@@ -127,6 +156,7 @@ object Form1: TForm1
     Anchors = [akLeft, akBottom]
     Caption = 'Step size'
     TabOrder = 3
+    Visible = False
     DesignSize = (
       63
       81)
@@ -164,8 +194,8 @@ object Form1: TForm1
     end
   end
   object BScramble: TButton
-    Left = 537
-    Top = 708
+    Left = 624
+    Top = 702
     Width = 105
     Height = 25
     Anchors = [akRight, akBottom]
@@ -175,7 +205,7 @@ object Form1: TForm1
   end
   object ButtonRotate: TButton
     Left = 664
-    Top = 707
+    Top = 70
     Width = 105
     Height = 25
     Anchors = [akRight, akBottom]
@@ -184,7 +214,7 @@ object Form1: TForm1
     OnClick = ButtonRotateClick
   end
   object GroupBox2: TGroupBox
-    Left = 325
+    Left = 143
     Top = 655
     Width = 145
     Height = 77
@@ -203,7 +233,6 @@ object Form1: TForm1
       Caption = 'Show orientations'
       TabOrder = 0
       OnClick = CBOrientClick
-      ExplicitTop = 42
     end
     object CBId: TCheckBox
       Left = 16
@@ -214,7 +243,6 @@ object Form1: TForm1
       Caption = 'Show tile ID'#39's'
       TabOrder = 1
       OnClick = CBIdClick
-      ExplicitTop = 62
     end
     object CBMDir: TCheckBox
       Left = 16
@@ -224,7 +252,6 @@ object Form1: TForm1
       Anchors = [akLeft, akBottom]
       Caption = 'Swap mouse buttons'
       TabOrder = 2
-      ExplicitTop = 82
     end
   end
   object Timer1: TTimer
@@ -239,6 +266,10 @@ object Form1: TForm1
     Interval = 50
     OnTimer = TimerFlareTimer
     Left = 624
+    Top = 592
+  end
+  object TimerWait: TTimer
+    Left = 664
     Top = 592
   end
 end
