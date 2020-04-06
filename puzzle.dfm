@@ -40,8 +40,7 @@ object Form1: TForm1
       Align = alClient
       OnMouseDown = PBMouseDown
       OnPaint = PBPaint
-      ExplicitWidth = 650
-      ExplicitHeight = 641
+      ExplicitTop = 5
     end
     object ButtonReflect: TButton
       Left = 664
@@ -53,34 +52,54 @@ object Form1: TForm1
       TabOrder = 0
       OnClick = ButtonReflectClick
     end
-    object B2PairSwap: TButton
-      Left = 23
-      Top = 125
-      Width = 106
-      Height = 25
-      Caption = 'Double Pair Swap'
+    object GroupBox3: TGroupBox
+      Left = 7
+      Top = 9
+      Width = 129
+      Height = 144
+      Caption = 'Useful macros'
       TabOrder = 1
-      OnClick = B2PairSwapClick
-    end
-    object BPairSwap: TButton
-      Left = 23
-      Top = 94
-      Width = 106
-      Height = 25
-      BiDiMode = bdLeftToRight
-      Caption = 'Single Pair Swap'
-      ParentBiDiMode = False
-      TabOrder = 2
-      OnClick = BPairSwapClick
-    end
-    object Button1: TButton
-      Left = 23
-      Top = 46
-      Width = 106
-      Height = 25
-      Caption = 'Single Pair Twist'
-      TabOrder = 3
-      OnClick = Button1Click
+      object B2PairSwap: TButton
+        Left = 10
+        Top = 86
+        Width = 106
+        Height = 25
+        Caption = 'Double Pair Swap'
+        TabOrder = 0
+        OnClick = B2PairSwapClick
+      end
+      object BPairSwap: TButton
+        Left = 10
+        Top = 52
+        Width = 106
+        Height = 25
+        BiDiMode = bdLeftToRight
+        Caption = 'Single Pair Swap'
+        ParentBiDiMode = False
+        TabOrder = 1
+        OnClick = BPairSwapClick
+      end
+      object BPairTwist: TButton
+        Left = 10
+        Top = 21
+        Width = 106
+        Height = 25
+        Caption = 'Single Pair Twist'
+        TabOrder = 2
+        OnClick = BPairTwistClick
+      end
+      object ChkShowRot: TCheckBox
+        Left = 10
+        Top = 121
+        Width = 106
+        Height = 17
+        BiDiMode = bdLeftToRight
+        Caption = 'Show rotations'
+        Checked = True
+        ParentBiDiMode = False
+        State = cbChecked
+        TabOrder = 3
+      end
     end
   end
   object BReset: TButton

@@ -30,10 +30,12 @@ type
     CBOrient: TCheckBox;
     CBId: TCheckBox;
     CBMDir: TCheckBox;
-    B2PairSwap: TButton;
     TimerWait: TTimer;
+    GroupBox3: TGroupBox;
+    B2PairSwap: TButton;
     BPairSwap: TButton;
-    Button1: TButton;
+    BPairTwist: TButton;
+    ChkShowRot: TCheckBox;
     procedure PBPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure BScrambleClick(Sender: TObject);
@@ -55,7 +57,7 @@ type
     procedure CBIdClick(Sender: TObject);
     procedure B2PairSwapClick(Sender: TObject);
     procedure BPairSwapClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure BPairTwistClick(Sender: TObject);
   private
 
   public
@@ -538,35 +540,6 @@ begin
     rotateDisk(circleIdx, 1 * a)
   else
     rotateDisk(circleIdx, -1 * a);
-
-  // if CBDisk.Checked and (centerState[(circleIdx + 1) mod 5] <> 0) and
-  // (centerState[(circleIdx + 1) mod 5] <> 3) then
-  // // impossible rotation
-  // begin
-  // TimerFlare.Tag := 4;
-  // TimerFlare.Enabled := true;
-  // exit;
-  // end;
-  //
-  // if CBDisk.Checked and (centerState[(circleIdx + 4) mod 5] <> 0) and
-  // (centerState[(circleIdx + 4) mod 5] <> 7) then
-  // // impossible rotation
-  // begin
-  // TimerFlare.Tag := 4;
-  // TimerFlare.Enabled := true;
-  // exit;
-  // end;
-  //
-  // isRotating := true;
-  // rotAngle := 0;
-  // Timer1.Enabled := true;
-  // if Button = mbLeft then
-  // Timer1.Tag := 1
-  // else
-  // Timer1.Tag := -1;
-  // if CBMDir.Checked then
-  // Timer1.Tag := Timer1.Tag * (-1);
-
 end;
 
 procedure TForm1.PBPaint(Sender: TObject);
@@ -890,101 +863,177 @@ begin
   until elapsed >= 400;
 end;
 
+
+procedure movei(n: Integer);
+var
+  i: Integer;
+begin
+  for i := 1 to 9 do
+    move(n);
+end;
+
+
 procedure TForm1.B2PairSwapClick(Sender: TObject);
 begin
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(1, -1);
-  wait;
-  rotateDisk(4, -1);
-  wait;
-  rotateDisk(1, 1);
+  if ChkShowRot.Checked then
+  begin
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(1, -1);
+    wait;
+    rotateDisk(4, -1);
+    wait;
+    rotateDisk(1, 1);
+  end
+  else
+  begin
+    move(4);
+    movei(1);
+    movei(4);
+    move(1);
+    PB.Invalidate;
+  end;
 end;
 
 procedure TForm1.BPairSwapClick(Sender: TObject);
 begin
   // R3 L4 R2 L2 R3 L4  R2 L4 R3 L2 R2 L4
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
 
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
+  if ChkShowRot.Checked then
+  begin
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
 
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
 
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
 
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
 
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
 
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
 
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
 
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
 
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
 
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
 
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
+
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+  end
+  else
+  begin
+    move(1);
+    move(1);
+    move(1);
+
+    move(4);
+    move(4);
+    move(4);
+    move(4);
+
+    move(1);
+    move(1);
+
+    move(4);
+    move(4);
+
+    move(1);
+    move(1);
+    move(1);
+
+    move(4);
+    move(4);
+    move(4);
+    move(4);
+
+    move(1);
+    move(1);
+
+    move(4);
+    move(4);
+    move(4);
+    move(4);
+
+    move(1);
+    move(1);
+    move(1);
+
+    move(4);
+    move(4);
+
+    move(1);
+    move(1);
+
+    move(4);
+    move(4);
+    move(4);
+    move(4);
+
+    PB.Invalidate;
+  end;
 end;
 
 procedure TForm1.BResetClick(Sender: TObject);
@@ -1008,51 +1057,80 @@ begin
   PB.Invalidate;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+
+procedure TForm1.BPairTwistClick(Sender: TObject);
 begin
   // R1 L1 R1 L9    R9 L1 R9 L9   R1 L9 R1 L2   R9 L8 R9 L1
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(4, -1);
-  wait;
 
-  rotateDisk(1, -1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(1, -1);
-  wait;
-  rotateDisk(4, -11);
-  wait;
+  if ChkShowRot.Checked then
+  begin
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(4, -1);
+    wait;
 
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(4, -1);
-  wait;
-  rotateDisk(1, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
+    rotateDisk(1, -1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(1, -1);
+    wait;
+    rotateDisk(4, -1);
+    wait;
 
-  rotateDisk(1, -1);
-  wait;
-  rotateDisk(4, -1);
-  wait;
-  rotateDisk(4, -1);
-  wait;
-  rotateDisk(1, -1);
-  wait;
-  rotateDisk(4, 1);
-  wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(4, -1);
+    wait;
+    rotateDisk(1, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
 
+    rotateDisk(1, -1);
+    wait;
+    rotateDisk(4, -1);
+    wait;
+    rotateDisk(4, -1);
+    wait;
+    rotateDisk(1, -1);
+    wait;
+    rotateDisk(4, 1);
+    wait;
+  end
+  else
+  begin
 
+    move(1);
+    move(4);
+    move(1);
+    movei(4);
 
+    movei(1);
+    move(4);
+    movei(1);
+    movei(4);
+
+    move(1);
+    movei(4);
+    move(1);
+    move(4);
+    move(4);
+
+    movei(1);
+    movei(4);
+    movei(4);
+    movei(1);
+    move(4);
+
+    PB.Invalidate;
+  end;
 end;
 
 procedure TForm1.ButtonReflectClick(Sender: TObject);
